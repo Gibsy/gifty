@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Gifty</string>
+    <string name="slogan">Кім кімге қанша — бәрі есепте</string>
+
+    <string name="nav_tois">Тойлар</string>
+    <string name="nav_people">Адамдар</string>
+    <string name="nav_analytics">Талдау</string>
+
+    <string name="add_toi">Той қосу</string>
+    <string name="add_person">Адам қосу</string>
+    <string name="own_toi">Өз тойым</string>
+    <string name="guest_toi">Қонақпын</string>
+    <string name="balance">Өзара есеп</string>
+    <string name="suggested_amount">Ұсынылатын сома</string>
+    <string name="save">Сақтау</string>
+    <string name="cancel">Болдырмау</string>
+    <string name="received">Маған берді</string>
+    <string name="given">Мен бердім</string>
+    <string name="total_year">Жылдық шығын</string>
+</resources>
