@@ -64,8 +64,9 @@ Kotlin · Jetpack Compose · Material 3 · Hilt · Room · DataStore · WorkMana
 
 ## Data & storage
 
-All data is stored **locally** (Room + DataStore), no cloud. Amounts are stored internally in minor units (1/100 of the main unit); the selected currency only changes how they're displayed.
+All data is stored **locally** (Room + DataStore). Optionally you can connect a cloud folder (Google Drive, Dropbox, etc.) through the system file picker — the app just writes JSON backups into that folder and lets the cloud app sync them. There are no accounts, servers or access tokens involved. Amounts are stored internally in minor units (1/100 of the main unit).
 
 ## License
 
-MIT
+Released under the **MIT License** — see [LICENSE](LICENSE).
+
