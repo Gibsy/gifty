@@ -20,6 +20,4 @@ object Money {
         val number = nf.format(unit)
         return if (currency.symbolFirst) "${currency.symbol}$number" else "$number ${currency.symbol}"
     }
-
-    fun masked(): String = "\u2022\u2022\u2022\u2022\u2022 ${currency.symbol}"
 }

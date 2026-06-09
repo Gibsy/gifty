@@ -41,6 +41,9 @@ import com.gibs.kadeesebi.domain.model.Currency
 import com.gibs.kadeesebi.domain.model.ThemeMode
 import com.gibs.kadeesebi.presentation.i18n.LocalStrings
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +59,10 @@ fun SettingsScreen(
     val currency by viewModel.currency.collectAsStateWithLifecycle()
     val language by viewModel.language.collectAsStateWithLifecycle()
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+    val backupFileName = remember {
+        "gifty_backup_" + SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()) + ".json"
+    }
+    val cloudFolder by viewModel.cloudFolderUri.collectAsStateWithLifecycle()
 
     fun share(uri: Uri, mime: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
@@ -78,6 +85,19 @@ fun SettingsScreen(
     ) { uri: Uri? ->
         if (uri != null) viewModel.restore(uri) { ok ->
             scope.launch { snackbar.showSnackbar(if (ok) strings.dataRestored else strings.restoreFailed) }
+        }
+    }
+    val cloudFolderLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree(),
+    ) { uri: Uri? ->
+        if (uri != null) {
+            context.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+            )
+            viewModel.connectCloudFolder(uri) { ok ->
+                scope.launch { snackbar.showSnackbar(if (ok) strings.cloudSaved else strings.cloudSaveFailed) }
+            }
         }
     }
 
@@ -220,12 +240,43 @@ fun SettingsScreen(
                     Text(strings.backupBody, style = MaterialTheme.typography.bodySmall)
                     OutlinedButton(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { backupLauncher.launch("kade_esebi_backup.json") },
+                        onClick = { backupLauncher.launch(backupFileName) },
                     ) { Text(strings.createBackup) }
                     OutlinedButton(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { restoreLauncher.launch(arrayOf("application/json", "application/octet-stream", "text/plain", "*/*")) },
                     ) { Text(strings.restoreBackup) }
+                }
+            }
+
+            Card(Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(strings.cloudTitle, style = MaterialTheme.typography.titleMedium)
+                    Text(strings.cloudBody, style = MaterialTheme.typography.bodySmall)
+                    if (cloudFolder != null) {
+                        Text(
+                            strings.cloudConnected,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                viewModel.backupToCloud { ok ->
+                                    scope.launch { snackbar.showSnackbar(if (ok) strings.cloudSaved else strings.cloudSaveFailed) }
+                                }
+                            },
+                        ) { Text(strings.cloudSaveNow) }
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { viewModel.disconnectCloudFolder() },
+                        ) { Text(strings.cloudDisconnect) }
+                    } else {
+                        OutlinedButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { cloudFolderLauncher.launch(null) },
+                        ) { Text(strings.cloudConnect) }
+                    }
                 }
             }
 

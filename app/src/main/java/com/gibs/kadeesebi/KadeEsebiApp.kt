@@ -16,6 +16,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import android.net.Uri
+import com.gibs.kadeesebi.data.backup.BackupManager
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -25,6 +30,7 @@ class KadeEsebiApp : Application(), Configuration.Provider {
     @Inject lateinit var circleRepository: CircleRepository
     @Inject lateinit var eventTypeRepository: EventTypeRepository
     @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var backupManager: BackupManager
 
     override fun onCreate() {
         super.onCreate()
@@ -33,6 +39,15 @@ class KadeEsebiApp : Application(), Configuration.Provider {
             circleRepository.ensureDefaults()
             eventTypeRepository.ensureDefaults()
             Money.currency = settingsRepository.currency.first()
+            val cloudFolder = settingsRepository.cloudFolderUri.first()
+            if (cloudFolder != null) {
+                val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+                if (settingsRepository.lastCloudBackupDay.first() != today &&
+                    backupManager.backupToFolder(Uri.parse(cloudFolder))
+                ) {
+                    settingsRepository.setLastCloudBackupDay(today)
+                }
+            }
         }
         ToiReminderWorker.schedule(this)
     }

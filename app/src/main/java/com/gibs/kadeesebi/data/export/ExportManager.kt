@@ -59,7 +59,8 @@ class ExportManager @Inject constructor(
 
     suspend fun exportCsv(): Uri {
         val dir = File(context.cacheDir, "exports").apply { mkdirs() }
-        val file = File(dir, "kade_esebi_export.csv")
+        val stamp = SimpleDateFormat("yyyy-MM-dd", Locale("ru")).format(Date())
+        val file = File(dir, "gifty_export_$stamp.csv")
         val sb = StringBuilder()
         sb.append("\uFEFF")
         sb.append("\u0414\u0430\u0442\u0430;\u0421\u043e\u0431\u044b\u0442\u0438\u0435;\u0427\u0435\u043b\u043e\u0432\u0435\u043a;\u041d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435;\u0421\u0443\u043c\u043c\u0430;\u0417\u0430\u043c\u0435\u0442\u043a\u0430\n")
@@ -74,7 +75,8 @@ class ExportManager @Inject constructor(
     suspend fun exportPdf(): Uri {
         val data = rows()
         val dir = File(context.cacheDir, "exports").apply { mkdirs() }
-        val file = File(dir, "kade_esebi_export.pdf")
+        val stamp = SimpleDateFormat("yyyy-MM-dd", Locale("ru")).format(Date())
+        val file = File(dir, "gifty_export_$stamp.pdf")
         val doc = PdfDocument()
         val titlePaint = Paint().apply { textSize = 18f; isFakeBoldText = true }
         val headerPaint = Paint().apply { textSize = 11f; isFakeBoldText = true }

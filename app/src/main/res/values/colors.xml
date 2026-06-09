@@ -4,4 +4,5 @@
     <color name="steppe_gold">#FFE0A82E</color>
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="window_background">#FFFBF6EC</color>
 </resources>

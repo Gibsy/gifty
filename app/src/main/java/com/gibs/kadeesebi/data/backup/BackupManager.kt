@@ -2,6 +2,7 @@ package com.gibs.kadeesebi.data.backup
 
 import android.content.Context
 import android.net.Uri
+import android.provider.DocumentsContract
 import com.gibs.kadeesebi.domain.model.BuiltInEventTypes
 import com.gibs.kadeesebi.domain.model.Circle
 import com.gibs.kadeesebi.domain.model.EventType
@@ -18,6 +19,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,6 +35,37 @@ class BackupManager @Inject constructor(
     private val giftRepository: GiftRepository,
 ) {
     suspend fun export(uri: Uri) {
+        val json = buildJson()
+        context.contentResolver.openOutputStream(uri)?.use { os ->
+            os.write(json.toByteArray(Charsets.UTF_8))
+        }
+    }
+
+    /**
+     * Создаёт новый файл резервной копии внутри выбранной пользователем папки
+     * (Storage Access Framework). Папка может находиться в Google Drive, Dropbox
+     * и т. п. — синхронизацию выполняет само облачное приложение. Токены не нужны.
+     */
+    suspend fun backupToFolder(treeUri: Uri): Boolean = runCatching {
+        val json = buildJson()
+        val parent = DocumentsContract.buildDocumentUriUsingTree(
+            treeUri,
+            DocumentsContract.getTreeDocumentId(treeUri),
+        )
+        val stamp = SimpleDateFormat("yyyy-MM-dd_HHmm", Locale.US).format(Date())
+        val fileUri = DocumentsContract.createDocument(
+            context.contentResolver,
+            parent,
+            "application/json",
+            "gifty_backup_$stamp.json",
+        ) ?: return@runCatching false
+        context.contentResolver.openOutputStream(fileUri)?.use { os ->
+            os.write(json.toByteArray(Charsets.UTF_8))
+        } ?: return@runCatching false
+        true
+    }.getOrDefault(false)
+
+    private suspend fun buildJson(): String {
         val root = JSONObject()
         root.put("version", 3)
         root.put("exportedAt", System.currentTimeMillis())
@@ -90,9 +125,7 @@ class BackupManager @Inject constructor(
         }
         root.put("gifts", gifts)
 
-        context.contentResolver.openOutputStream(uri)?.use { os ->
-            os.write(root.toString(2).toByteArray(Charsets.UTF_8))
-        }
+        return root.toString(2)
     }
 
     suspend fun import(uri: Uri) {

@@ -120,6 +120,15 @@ interface Strings {
     val backupBody: String
     val createBackup: String
     val restoreBackup: String
+
+    val cloudTitle: String
+    val cloudBody: String
+    val cloudConnect: String
+    val cloudConnected: String
+    val cloudSaveNow: String
+    val cloudSaved: String
+    val cloudSaveFailed: String
+    val cloudDisconnect: String
     val languageTitle: String
     val languageRussian: String
     val languageKazakh: String
@@ -290,6 +299,14 @@ object RuStrings : Strings {
     override val backupBody = "Сохраните все данные в файл и восстановите при необходимости. Без интернета."
     override val createBackup = "Создать резервную копию"
     override val restoreBackup = "Восстановить из копии"
+    override val cloudTitle = "Облачная папка"
+    override val cloudBody = "Сохраняйте копии в папку Google Drive, Dropbox и т. п. через системный выбор. Без паролей и токенов."
+    override val cloudConnect = "Выбрать папку"
+    override val cloudConnected = "Папка подключена"
+    override val cloudSaveNow = "Сохранить в облако"
+    override val cloudSaved = "Копия сохранена в облако"
+    override val cloudSaveFailed = "Не удалось сохранить в облако"
+    override val cloudDisconnect = "Отключить папку"
     override val languageTitle = "Язык"
     override val languageRussian = "Русский"
     override val languageKazakh = "Қазақша"
@@ -455,6 +472,14 @@ object KkStrings : Strings {
     override val backupBody = "Барлық деректі файлға сақтап, қажет болса қалпына келтіріңіз. Интернетсіз."
     override val createBackup = "Сақтық көшірме жасау"
     override val restoreBackup = "Көшірмеден қалпына келтіру"
+    override val cloudTitle = "Бұлттық қалта"
+    override val cloudBody = "Көшірмелерді Google Drive, Dropbox т.б. қалтасына жүйелік таңдау арқылы сақтаңыз. Құпиясөз бен токенсіз."
+    override val cloudConnect = "Қалта таңдау"
+    override val cloudConnected = "Қалта қосылды"
+    override val cloudSaveNow = "Бұлтқа сақтау"
+    override val cloudSaved = "Көшірме бұлтқа сақталды"
+    override val cloudSaveFailed = "Бұлтқа сақтау сәтсіз аяқталды"
+    override val cloudDisconnect = "Қалтаны ажырату"
     override val languageTitle = "Тіл"
     override val languageRussian = "Орысша"
     override val languageKazakh = "Қазақша"
@@ -620,6 +645,14 @@ object EnStrings : Strings {
     override val backupBody = "Save all data to a file and restore when needed. Works offline."
     override val createBackup = "Create backup"
     override val restoreBackup = "Restore from backup"
+    override val cloudTitle = "Cloud folder"
+    override val cloudBody = "Save backups to a Google Drive / Dropbox folder via the system picker. No passwords or tokens."
+    override val cloudConnect = "Choose folder"
+    override val cloudConnected = "Folder connected"
+    override val cloudSaveNow = "Save to cloud"
+    override val cloudSaved = "Backup saved to cloud"
+    override val cloudSaveFailed = "Couldn't save to cloud"
+    override val cloudDisconnect = "Disconnect folder"
     override val languageTitle = "Language"
     override val languageRussian = "Русский"
     override val languageKazakh = "Қазақша"

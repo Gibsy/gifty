@@ -26,6 +26,8 @@ class SettingsRepository @Inject constructor(
     private val languageKey = stringPreferencesKey("app_language")
     private val themeKey = stringPreferencesKey("theme_mode")
     private val onboardingKey = booleanPreferencesKey("onboarding_completed")
+    private val cloudFolderKey = stringPreferencesKey("cloud_folder_uri")
+    private val lastCloudBackupDayKey = stringPreferencesKey("last_cloud_backup_day")
 
     val currency: Flow<Currency> = context.settingsDataStore.data.map { prefs ->
         Currency.fromCode(prefs[currencyKey])
@@ -57,5 +59,23 @@ class SettingsRepository @Inject constructor(
 
     suspend fun setOnboardingDone(done: Boolean) {
         context.settingsDataStore.edit { it[onboardingKey] = done }
+    }
+
+    val cloudFolderUri: Flow<String?> = context.settingsDataStore.data.map { prefs ->
+        prefs[cloudFolderKey]
+    }
+
+    suspend fun setCloudFolderUri(uri: String?) {
+        context.settingsDataStore.edit {
+            if (uri == null) it.remove(cloudFolderKey) else it[cloudFolderKey] = uri
+        }
+    }
+
+    val lastCloudBackupDay: Flow<String?> = context.settingsDataStore.data.map { prefs ->
+        prefs[lastCloudBackupDayKey]
+    }
+
+    suspend fun setLastCloudBackupDay(day: String) {
+        context.settingsDataStore.edit { it[lastCloudBackupDayKey] = day }
     }
 }
